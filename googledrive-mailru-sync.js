@@ -22,7 +22,7 @@ function uploadFiles(folder) {
 
   while (files.hasNext()) {
     var file = files.next();
-    //if (Date.parse(file.getDateCreated()) >= Date.parse(_lastRuning)) {
+    if (Date.parse(file.getDateCreated()) >= Date.parse(_lastRuning)) {
       var status = uploadFile(file);
       if (status == true && isRemoveAfterUpload == true) {
         folder.removeFile(file);
@@ -33,7 +33,7 @@ function uploadFiles(folder) {
           }
         }
       } 
-    //}
+    }
   }
  
   var subfolders = folder.getFolders();
@@ -47,11 +47,11 @@ function uploadFile(file) {
   var access_token;
   var response;
   
-  //Получаем адрес сервера токенов
+  //РџРѕР»СѓС‡Р°РµРј Р°РґСЂРµСЃ СЃРµСЂРІРµСЂР° С‚РѕРєРµРЅРѕРІ
   response = UrlFetchApp.fetch('https://dispatcher.cloud.mail.ru/o').toString();
   var token_url = response.substring(0,response.indexOf(' '));
   
-  //Авторизуемся и получаем токен или обновляем его если устарел
+  //РђРІС‚РѕСЂРёР·СѓРµРјСЃСЏ Рё РїРѕР»СѓС‡Р°РµРј С‚РѕРєРµРЅ РёР»Рё РѕР±РЅРѕРІР»СЏРµРј РµРіРѕ РµСЃР»Рё СѓСЃС‚Р°СЂРµР»
   if (refresh_token == null) {
     response = JSON.parse(UrlFetchApp.fetch(token_url, {
       payload: {
@@ -74,12 +74,12 @@ function uploadFile(file) {
   }
   access_token = response.access_token;
   
-  //Получаем адрес сервера загрузки
+  //РџРѕР»СѓС‡Р°РµРј Р°РґСЂРµСЃ СЃРµСЂРІРµСЂР° Р·Р°РіСЂСѓР·РєРё
   response = JSON.parse(UrlFetchApp.fetch('https://cloud.mail.ru/api/v2/dispatcher'));
   var upload_url = response.body.upload[0].url;
   
   
-  //Загружаем файл
+  //Р—Р°РіСЂСѓР¶Р°РµРј С„Р°Р№Р»
   response = UrlFetchApp.fetch(upload_url + '?token=' + access_token, {
                                           method: 'put',
                                           headers: {
@@ -89,7 +89,7 @@ function uploadFile(file) {
   });
   var file_hash = response;
   
-  //Публикуем загруженный файл
+  //РџСѓР±Р»РёРєСѓРµРј Р·Р°РіСЂСѓР¶РµРЅРЅС‹Р№ С„Р°Р№Р»
   response = JSON.parse(UrlFetchApp.fetch('https://cloud.mail.ru/api/v2/tokens?access_token=' + access_token));
   response = JSON.parse(UrlFetchApp.fetch('https://cloud.mail.ru/api/v2/file/add?token=' + response.body.token + '&access_token=' + access_token + '&hash=' + file_hash + '&home=/' + to_upload_folder + '/' +getFolderPath(file) + '/' + file.getName() + '&size=' + file.getSize() + '&conflict=rename'));
   
