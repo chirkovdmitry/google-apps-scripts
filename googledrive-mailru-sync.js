@@ -6,6 +6,7 @@ var isRemoveAfterUpload = true;
 
 var _lastRuning;
 
+//Начальная функция задания
 function run() {
   var userProperties = PropertiesService.getUserProperties();
   _lastRuning = userProperties.getProperty('last_runing') || new Date(1900,0,1);
@@ -41,6 +42,7 @@ function uploadFiles(folder) {
     uploadFiles(subfolders.next());
 }
 
+//Функция выгрузки файла
 function uploadFile(file) {
   var userProperties = PropertiesService.getUserProperties();
   var refresh_token = userProperties.getProperty('refresh_token');
